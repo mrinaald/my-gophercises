@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/mrinaald/my-gophercises/assets"
 )
@@ -20,6 +21,7 @@ func main() {
 	var fileName string
 	flag.StringVar(&fileName, "filepath", assets.QuizGameDefaultProblemFile, "The CSV file containing quiz problems.")
 
+	timeLimit := flag.Int("timelimit", 30, "The time limit for the quiz in seconds")
 	flag.Parse()
 
 	// just to check whether file exists: https://stackoverflow.com/a/12518877
@@ -40,14 +42,27 @@ func main() {
 
 	problems := parseLines(lines)
 
-	var userAnswer string
+	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
+
 	correctAnswers := 0
 	for i, problem := range problems {
 		fmt.Printf("Problem #%d: %s = ", i+1, problem.question)
-		fmt.Scanf("%s\n", &userAnswer)
+		answerCh := make(chan string)
 
-		if userAnswer == problem.answer {
-			correctAnswers++
+		go func() {
+			var answer string
+			fmt.Scanf("%s\n", &answer)
+			answerCh <- answer
+		}()
+
+		select {
+		case userAnswer := <-answerCh :
+			if userAnswer == problem.answer {
+				correctAnswers++
+			}
+		case <-timer.C:
+			fmt.Printf("\nYou scored %d out of %d.\n", correctAnswers, len(lines))
+			return
 		}
 	}
 
