@@ -11,10 +11,9 @@ import (
 	"github.com/mrinaald/my-gophercises/assets"
 )
 
-
 type Problem struct {
 	question string
-	answer string
+	answer   string
 }
 
 func main() {
@@ -29,16 +28,16 @@ func main() {
 	f, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println(err)
-        os.Exit(1)
+		os.Exit(1)
 	}
 	defer f.Close()
 
 	csvReader := csv.NewReader(f)
 
 	lines, err := csvReader.ReadAll()
-    if err != nil {
-        os.Exit(1)
-    }
+	if err != nil {
+		os.Exit(1)
+	}
 
 	problems := parseLines(lines)
 
@@ -56,7 +55,7 @@ func main() {
 		}()
 
 		select {
-		case userAnswer := <-answerCh :
+		case userAnswer := <-answerCh:
 			if userAnswer == problem.answer {
 				correctAnswers++
 			}
@@ -74,7 +73,7 @@ func parseLines(lines [][]string) []Problem {
 	for i, line := range lines {
 		problems[i] = Problem{
 			question: line[0],
-			answer: strings.TrimSpace(line[1]),
+			answer:   strings.TrimSpace(line[1]),
 		}
 	}
 
