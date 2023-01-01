@@ -1,7 +1,6 @@
 package urlshort
 
 import (
-	"fmt"
 	"net/http"
 
 	"gopkg.in/yaml.v2"
