@@ -21,3 +21,5 @@ func getCurrentFileAbsPath() string {
 }
 
 var QuizGameDefaultProblemFile, _ = filepath.Abs(filepath.Join(getCurrentFileAbsPath(), "quiz-game/problems.csv"))
+
+var ChooseAdventureStoryFile, _ = filepath.Abs(filepath.Join(getCurrentFileAbsPath(), "chooseadventure/gopher.json"))
