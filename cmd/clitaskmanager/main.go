@@ -1,12 +1,28 @@
 package main
 
 import (
-	"github.com/mrinaald/my-gophercises/pkg/clitaskmanager"
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"github.com/mitchellh/go-homedir"
+	"github.com/mrinaald/my-gophercises/pkg/clitaskmanager/cmd"
+	"github.com/mrinaald/my-gophercises/pkg/clitaskmanager/db"
 )
 
 func main() {
-	clitaskmanager.InitailizeDB()
-	defer clitaskmanager.FinalizeDB()
+	home, _ := homedir.Dir()
+	dbPath := filepath.Join(home, "tasks.db")
 
-	clitaskmanager.Execute()
+	must(db.InitailizeDB(dbPath))
+	defer db.CloseDB()
+
+	must(cmd.Execute())
+}
+
+func must(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
